@@ -20,7 +20,7 @@ Demo is available in the file `src/demo.py`. The demo optimizes a forward pass n
 TODO:
 - [*] Add another file neuroevolution_strat.py that also implements the methods described on interfaces.py, but uses neuroevolution instead.
 - [*] Add more RL frameworks besides cartpole (take into account Discrete/Box actions and observations).
-- [ ] Normalize inputs / outputs in environments.
+- [*] Normalize inputs / outputs in environments.
 - [ ] Add source to plot the results.
 
 
