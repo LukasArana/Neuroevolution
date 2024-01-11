@@ -1,0 +1,7 @@
+cma==3.3.0
+gymnasium==0.29.1
+neat_python==0.92
+numpy==1.26.3
+opencv_python==4.9.0.80
+cma @ git+https://github.com/CMA-ES/pycma.git@2cf24efc97511edcfdd622aba4392ae60a061ab3
+matplotlib==3.8.2

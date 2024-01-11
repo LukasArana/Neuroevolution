@@ -38,6 +38,7 @@ def evaluate_policy(policy_nn: policy_nn, nreps, seed, show = False):
         total_reward = 0
 
         while not (terminated or truncated): 
+            observation = (observation - env.observation_space.low) / (env.observation_space.high - env.observation_space.low) #MinMax to 0-1 range
             output = policy_nn.get_output(observation)
             if is_discrete:
                 action = np.argmax(output)
@@ -93,8 +94,8 @@ assert action_space_dim == config.genome_config.num_outputs, "Config file output
 
 seed=2
 
-#strat = neat_strat(seed, config)
-strat = cma_strat(seed, config)
+strat = neat_strat(seed, config)
+#strat = cma_strat(seed, config)
 max_evals = 5000
 rs = np.random.RandomState(seed=seed)
 start_time = time.time()
