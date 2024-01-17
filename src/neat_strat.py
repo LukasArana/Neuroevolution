@@ -87,7 +87,8 @@ class neat_strat(optimization_strat):
     _solutions = []
     _solution_idx = 0
 
-    def __init__(self, seed, config):
+    def __init__(self, seed, config, name):
+        self.name = name
         self.config = config
         self.p = neat.Population(config)
         stats = neat.StatisticsReporter()
@@ -104,7 +105,7 @@ class neat_strat(optimization_strat):
     def show(self) -> policy_nn:
         if self._solution_idx >= len(self._solutions): #Update the population
             if self._solution_idx != 0:
-                self.p.run(n=1) # run NEAT for a single iteration. Population is updated
+                self.p.run(n=1) # run NEAT for a single iteration.
             self._solutions = list(self.p.population.values())
             self._f_values = []
             self._solution_idx = 0

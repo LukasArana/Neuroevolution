@@ -10,8 +10,6 @@ class cma_hyperparams:
     n_middle_layers=3# it is actually the number of mid-layer to mid-layer weight-sets
     n_params_middle_layers=7
 
-
-
 class cma_nn:
 
     def __init__(self, n_in, n_out):
@@ -77,8 +75,9 @@ class cma_strat(optimization_strat):
     _f_values = []
     _solution_idx = 0
 
-    def __init__(self, seed, config):
+    def __init__(self, seed, config, name):
  
+        self.name = name
         self.n_in = config.genome_config.num_inputs 
         self.n_out = config.genome_config.num_outputs
         self.random_state = np.random.RandomState(seed)
