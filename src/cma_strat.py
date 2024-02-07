@@ -7,8 +7,8 @@ class cma_hyperparams:
     mean_normal_initialization=0
     std_normal_initialization=0.1
     cma_sigma0=0.2
-    n_middle_layers=3# it is actually the number of mid-layer to mid-layer weight-sets
-    n_params_middle_layers=7
+    n_middle_layers=0 # it is actually the number of mid-layer to mid-layer weight-sets. n_middle_layers = hidden_layers - 1
+    n_params_middle_layers=10
 
 class cma_nn:
 
@@ -71,12 +71,12 @@ class cma_strat(optimization_strat):
 
     strat_name = "cma"
     es = None
-    _solutions = []
-    _f_values = []
     _solution_idx = 0
 
     def __init__(self, seed, config, name):
- 
+        self._solutions = []
+        self._f_values = []
+
         self.name = name
         self.n_in = config.genome_config.num_inputs 
         self.n_out = config.genome_config.num_outputs
@@ -84,7 +84,6 @@ class cma_strat(optimization_strat):
         x0 = self.random_state.normal(cma_hyperparams.mean_normal_initialization, cma_hyperparams.std_normal_initialization, cma_nn(self.n_in, self.n_out)._get_total_dim())
         self.es = cma.CMAEvolutionStrategy(x0, cma_hyperparams.cma_sigma0, {"seed":seed})
         self._solutions = self.es.ask()
-
 
     def show(self) -> policy_nn: # Return the best nn found
         if self._solution_idx >= len(self._solutions):

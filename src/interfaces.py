@@ -3,6 +3,7 @@ import numpy.typing as npt
 import csv
 import os
 import pickle
+from pathlib import Path
 class policy_nn:
 
     def __init__(self, n_in, n_out):
@@ -21,7 +22,7 @@ class optimization_strat:
 
     def tell(self, objective_value: float) -> None:
         raise NotImplementedError()
-    def log(self, resfilepath, f, evaluations, steps, fs, time):
+    def log(self, resfilepath, f, evaluations, steps, time):
         file_exists = os.path.exists(resfilepath)
         with open(resfilepath, 'a', newline='') as csvfile:
             csvwriter = csv.writer(csvfile)
@@ -29,14 +30,10 @@ class optimization_strat:
                 csvwriter.writerow(['f', 'evaluations', 'steps', 'time'])
             csvwriter.writerow([f, evaluations, steps, time])
         
+        """
         fs_name = f"{resfilepath[:-4]}_fs.txt"
-        print(fs_name)
         with open(fs_name, "a") as file:
             for f in fs:
                 file.write(str(f) + ' ')
             file.write("\n")
-"""
-    def save_model(self, params_path):
-        raise NotImplementedError()
-
-"""
+        """
