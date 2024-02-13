@@ -14,10 +14,13 @@ def _eval_genomes(eval_single_genome, genomes, neat_config):
 class neat_nn(policy_nn):
 
     def __init__(self, genome, config):
+        self.config  = config
+        self.genome = genome
         self.nn = neat.nn.FeedForwardNetwork.create(genome, config)
 
-    def get_output(self, input):
-        return self.nn.activate(input)
+    def get_output(self, input_):
+        
+        return self.nn.activate(input_)
 
 def run(self, n):
     #Overidding NEAT package run algorithm so accepts our arguments
@@ -82,7 +85,7 @@ def run(self, n):
 
 class neat_strat(optimization_strat):
 
-    strat_name = "cma"
+    strat_name = "neat"
     es = None
     _solutions = []
     _solution_idx = 0
@@ -109,9 +112,8 @@ class neat_strat(optimization_strat):
             self._solutions = list(self.p.population.values())
             self._f_values = []
             self._solution_idx = 0
-
-        res = neat_nn(self._solutions[self._solution_idx], self.config)
-        return res
+        res = self._solutions[self._solution_idx]
+        return neat_nn(res, self.config)
 
     def tell(self, f: float) -> None:
         self._solutions[self._solution_idx].fitness = f #Update fitness value 
@@ -119,5 +121,3 @@ class neat_strat(optimization_strat):
 
 # nn = cma_nn(2,4)
 # print(nn._get_total_dim(), nn.get_output(np.array([0.5,0.5])))
-
-

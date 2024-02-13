@@ -2,13 +2,14 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+*.ipynb
 #Videos
 *.avi
-
+*.gv
+*.svg
 # C extensions
 *.so
-
+.Rhistory
 # Distribution / packaging
 .Python
 build/
