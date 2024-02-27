@@ -20,12 +20,14 @@ def get_attr(genome):
         return genome.fitness
     return [get_weights(genome), get_neurons(genome), get_activations(genome), get_fitness(genome)]
 
-ENVS = {"pendulum": gym.make('Pendulum-v1'),
-            "mountain_car_cont": gym.make('MountainCarContinuous-v0'),
-            "mountain_car": gym.make("MountainCar-v0"),
-            "lunar": gym.make( "LunarLander-v2"),
-            "cart": gym.make("CartPole-v1"),
-            "acrobot": gym.make("Acrobot-v1")}
+ENVS = {"cart": gym.make("CartPole-v1"),
+        "pendulum": gym.make('Pendulum-v1'),
+        "mountain_car_cont": gym.make('MountainCarContinuous-v0'),
+        "mountain_car": gym.make("MountainCar-v0"),
+        "lunar": gym.make( "LunarLander-v2"),
+        "acrobot": gym.make("Acrobot-v1"),
+        "DoubleInvertedPendulum": gym.make('InvertedDoublePendulum-v4'),
+        "InvertedPendulum": gym.make("InvertedPendulum-v4"),}
 
 def draw_net(config, genome, view=False, filename=None, node_names=None, show_disabled=True, prune_unused=False,
              node_colors=None, fmt='svg'):
