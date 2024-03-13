@@ -85,12 +85,11 @@ class cma_strat(optimization_strat):
         x0 = self.random_state.normal(cma_hyperparams.mean_normal_initialization, cma_hyperparams.std_normal_initialization, cma_nn(self.n_in, self.n_out)._get_total_dim())
         self.es = cma.CMAEvolutionStrategy(x0, cma_hyperparams.cma_sigma0, {"seed":seed, "popsize": 200, 'bounds': [[-1], [1]]})
         self._solutions = self.es.ask()
-
+        self.cma_nn = cma_nn(self.n_in, self.n_out)
     def show(self) -> policy_nn: # Return the best nn found
         if self._solution_idx >= len(self._solutions):
 
             self.es.tell(self._solutions, self._f_values)
-           # self.es.manage_plateaus()
             self._solutions = self.es.ask()
             self._f_values = []
             self._solution_idx = 0

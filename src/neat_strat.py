@@ -12,12 +12,11 @@ def _eval_genomes(eval_single_genome, genomes, neat_config):
     parallel_evaluator.evaluate(genomes, neat_config)
 
 class neat_nn(policy_nn):
-
     def __init__(self, genome, config):
         self.config  = config
         self.genome = genome
-        self.nn = neat.nn.FeedForwardNetwork.create(genome, config)
-
+        #self.nn = neat.nn.FeedForwardNetwork.create(genome, config)
+        self.nn = neat.nn.recurrent.RecurrentNetwork.create(genome, config)
     def get_output(self, input_):
         
         return self.nn.activate(input_)

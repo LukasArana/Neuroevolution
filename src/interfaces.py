@@ -3,8 +3,42 @@ import numpy.typing as npt
 import csv
 import os
 import pickle
-from nn_analize import save_arch
 from pathlib import Path
+import pandas as pd
+def get_attr(genome):
+    #Get attributes from the genome of type cma
+    #Number of weights mid
+    def get_weights(genome):
+        return len(genome.connections)
+
+    def get_neurons(genome):
+        return len(genome.nodes)# One node is always the output
+
+    #The activation fucntions
+    def get_activations(genome):
+        return list([i.activation for i in genome.nodes.values()])
+    def get_fitness(genome):
+        return genome.fitness
+    return [get_weights(genome), get_neurons(genome), get_activations(genome), get_fitness(genome)]
+def save_arch(path):
+    objects = []
+    with open(path, "rb") as f:
+        while True:
+            try:
+                obj = pickle.load(f)
+                objects.append(obj)
+            except EOFError:
+                break
+
+    data = {"weight":[], "neurons":[], "fitness":[]}
+    for obj in objects:
+        n_weights, n_neuron, n_activations, fit =  get_attr(obj.genome)
+
+        data["weight"].append(n_weights)
+        data["neurons"].append(n_neuron)
+        data["fitness"].append(fit)
+    name = os.path.splitext(path)[0] + ".csv"
+    pd.DataFrame(data).to_csv(name)
 
 class policy_nn:
 

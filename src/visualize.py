@@ -5,7 +5,9 @@ from main  import get_config
 import graphviz
 import matplotlib.pyplot as plt
 import numpy as np
-
+import pickle
+import glob
+import os
 ENVS = {"pendulum": gym.make('Pendulum-v1'),
             "mountain_car_cont": gym.make('MountainCarContinuous-v0'),
             "mountain_car": gym.make("MountainCar-v0"),
@@ -192,3 +194,25 @@ def draw_net(genome, view=False, filename=None, node_names=None, show_disabled=T
     dot.render(filename, view=view)
 
     return dot
+
+def save_arch(path):
+    folder = "results/arch/" + os.path.basename(path)
+    
+    objects = []
+    idg = -1
+    for i in sorted(glob.glob(os.path.join(path, "neat*.pkl"))):
+        num = i.split("/")[-1].split("_")[-2]
+        os.makedirs(os.path.join(folder, num), exist_ok = True)
+        idg += 1
+        with open(i, "rb") as f:
+            idx = -1
+            while True:
+                idx += 1
+                try:
+                    obj = pickle.load(f)
+                    draw_net(obj.genome, filename = os.path.join(os.path.join(folder, num), f"{idx}.gv.svg"))
+                except EOFError:
+                    break
+
+for i in ENVS:
+    save_arch(f"results/data/pruebaF/{i}")

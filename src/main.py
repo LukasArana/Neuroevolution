@@ -10,8 +10,6 @@ import argparse
 import numbers
 import pickle
 import sys
-from gym.wrappers import RecordVideo
-video_name = 'video2.avi'
 def get_config(env, path = "/home/walle/Desktop/TFG/nofn/configs/config"):
     config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction, #nn information from Neat configuration file
             neat.DefaultSpeciesSet, neat.DefaultStagnation,
@@ -30,7 +28,8 @@ def get_config(env, path = "/home/walle/Desktop/TFG/nofn/configs/config"):
     config.genome_config.output_keys = list(range(0, config.genome_config.num_outputs)) #[1, ..., num_outputs]
     return config
 
-def evaluate_policy(policy_nn: policy_nn, nreps, seed, record = False):
+def evaluate_policy(policy_nn: policy_nn, nreps, seed, env, record = False, path = None, var = False):
+    video_name = path
     rewards_reps = np.zeros(nreps)
     rs = np.random.RandomState(seed = seed)
     for rep_idx in range(nreps):
@@ -50,21 +49,25 @@ def evaluate_policy(policy_nn: policy_nn, nreps, seed, record = False):
                 render = env.render()
                 if episode_frame == 0:
                     height, width, layers = render.shape
-                    video = cv2.VideoWriter(video_name,0, 1, (width, height))
+                    video = cv2.VideoWriter(video_name,0, 30, (width, height))
                 video.write(render)
+                episode_frame += 1
                # print(render)
             total_reward += reward # Acumulated reward
+        env.close()
+
         rewards_reps[rep_idx] = total_reward
 
         if record:
             cv2.destroyAllWindows()
             video.release()
-
+    if var:
+        return np.mean(rewards_reps), np.var(rewards_reps)
     return np.mean(rewards_reps)
 
 
-
-ENVS = {"cart": gym.make("CartPole-v1"),
+"""
+ENVS = {"cart": gym.make("CartPole-v1", render_mode = "rgb_array"),
         "pendulum": gym.make('Pendulum-v1'),
         "mountain_car_cont": gym.make('MountainCarContinuous-v0'),
         "mountain_car": gym.make("MountainCar-v0"),
@@ -72,6 +75,10 @@ ENVS = {"cart": gym.make("CartPole-v1"),
         "acrobot": gym.make("Acrobot-v1"),
         "DoubleInvertedPendulum": gym.make('InvertedDoublePendulum-v4'),
         "InvertedPendulum": gym.make("InvertedPendulum-v4")}
+"""
+ENVS = {"pendulum": gym.make('Pendulum-v1')}
+ENVS = {"mountain_car": gym.make("MountainCar-v0")}
+ENVS = {"DoubleInvertedPendulum": gym.make('InvertedDoublePendulum-v4')}
 SEED=3
 rs = np.random.RandomState(seed=SEED)
 if __name__ == "__main__":
@@ -83,25 +90,21 @@ if __name__ == "__main__":
         nreps = 20 # Number of repetitions for each algorithm in each env
         for rep_idx in range(nreps):
             arch_seed = rs.randint(int(1e8))
-            strats = [cma_strat(arch_seed, config, "cma"),neat_strat(arch_seed, config, "neat")] 
+            strats = [neat_strat(arch_seed, config, "neat"), cma_strat(arch_seed, config, "cma")] 
             for strat in strats:
                 best = (-sys.maxsize - 1, None)
                 start_time = time.time()
                 for evaluation_idx in range(max_evals):
                     nn = strat.show()
-                    f = evaluate_policy(nn, 1, rs.randint(int(1e8))) # Posible da 1 ordez 20 jartzea
+                    f = evaluate_policy(nn, 1, rs.randint(int(1e8)), env) # Posible da 1 ordez 20 jartzea
                     strat.tell(f)
                     if f > best[0]:
+                        #print(f, evaluate_policy(nn, 100, SEED, env) )
                         best = (f, nn)
                     if evaluation_idx % 1000 == 0:
-                        f = evaluate_policy(best[1], 100, 2) # Test seed always the same
-
-                        evaluate_policy(best[1], 1, 2, record =True)
+                        nn = best[1]
+                        f = evaluate_policy(nn, 100, SEED, env) # Test seed always the same
                         print(evaluation_idx / max_evals, f)
-                        break
-                        strat.log(f"results/data/prueba4/{env_name}/{strat.name}_{env_name}_{SEED}_{rep_idx}.txt", f, nn, evaluation_idx+1, env._elapsed_steps, time.time() - start_time)
+                        strat.log(f"results/data/pruebaaa/{env_name}/{strat.name}_{env_name}_{SEED}_{rep_idx}.txt", f, nn, evaluation_idx+1, env._elapsed_steps, time.time() - start_time)
                         fs = []
-                env.close()
-                break
                 print(f"time for all evaluations: {time.time() - start_time}")
-            break
