@@ -121,11 +121,10 @@ def plot_species(statistics, view=False, filename='speciation.svg'):
     plt.close()
 
 
-def draw_net(genome, view=False, filename=None, node_names=None, show_disabled=True, prune_unused=False,
+def draw_net(genome, env, view=False, filename=None, node_names=None, show_disabled=True, prune_unused=False,
              node_colors=None, fmt='svg'):
     """ Receives a genome and draws a neural network with arbitrary topology. """
-    env = ENVS["cart"]
-
+    env = ENVS[env]
     config = get_config(env)
 
     # Attributes for network nodes.
@@ -197,7 +196,7 @@ def draw_net(genome, view=False, filename=None, node_names=None, show_disabled=T
 
 def save_arch(path):
     folder = "results/arch/" + os.path.basename(path)
-    
+    os.makedirs(os.path.join(folder, "best"), exist_ok = True)
     objects = []
     idg = -1
     for i in sorted(glob.glob(os.path.join(path, "neat*.pkl"))):
@@ -210,9 +209,12 @@ def save_arch(path):
                 idx += 1
                 try:
                     obj = pickle.load(f)
-                    draw_net(obj.genome, filename = os.path.join(os.path.join(folder, num), f"{idx}.gv.svg"))
+                    draw_net(obj.genome,os.path.basename(path) ,filename = os.path.join(os.path.join(folder, num), f"{idx}.gv.svg"))
+                    if idx == int(19):
+                      #  if os.path.basename(path) == "pendulum" and idg == 15:
+                       #     print("a")
+                        draw_net(obj.genome,os.path.basename(path) ,filename = os.path.join(os.path.join(folder, "best"), f"{idg}.gv.svg"))
                 except EOFError:
                     break
-
-for i in ENVS:
-    save_arch(f"results/data/pruebaF/{i}")
+#for i in ENVS:
+#    save_arch(f"results/data/pruebaF/{i}")

@@ -84,9 +84,9 @@ ENVS = {"cart": gym.make("CartPole-v1", render_mode = "rgb_array"),
         "mountain_car_cont": gym.make('MountainCarContinuous-v0', render_mode = "rgb_array"),
         "mountain_car": gym.make("MountainCar-v0", render_mode = "rgb_array"),
         "lunar": gym.make( "LunarLander-v2", render_mode = "rgb_array"),
-        "acrobot": gym.make("Acrobot-v1", render_mode = "rgb_array"),
-        "DoubleInvertedPendulum": gym.make('InvertedDoublePendulum-v4', render_mode = "rgb_array"),
-        "InvertedPendulum": gym.make("InvertedPendulum-v4", render_mode = "rgb_array")}
+        "acrobot": gym.make("Acrobot-v1", render_mode = "rgb_array") }
+      #  "DoubleInvertedPendulum": gym.make('InvertedDoublePendulum-v4', render_mode = "rgb_array"),
+       # "InvertedPendulum": gym.make("InvertedPendulum-v4", render_mode = "rgb_array")}
 
 def get_nns(path):
     nns_cma = {i :[] for i in range(20)}
@@ -196,6 +196,6 @@ def save_arch(path):
     pd.DataFrame(data).to_csv(name)
 
 #save_arch(path = "/home/walle/Desktop/TFG/nofn/results/data/prueba/mountain_car_cont/neat_mountain_car_cont_3_9_nn.pkl")
-f#or env in ENVS.keys():
-  #  save_video(path = os.path.join("/home/walle/Desktop/TFG/nofn/results/data/prueba", env))
+for env in ENVS.keys():
+    save_video(path = os.path.join("/home/walle/Desktop/TFG/nofn/results/data/pruebaF", env))
 #save_video(path = "/home/walle/Desktop/TFG/nofn/results/data/prueba/DoubleInvertedPendulum", n = [19])

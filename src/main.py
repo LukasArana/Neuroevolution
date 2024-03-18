@@ -52,7 +52,6 @@ def evaluate_policy(policy_nn: policy_nn, nreps, seed, env, record = False, path
                     video = cv2.VideoWriter(video_name,0, 30, (width, height))
                 video.write(render)
                 episode_frame += 1
-               # print(render)
             total_reward += reward # Acumulated reward
         env.close()
 
@@ -77,8 +76,8 @@ ENVS = {"cart": gym.make("CartPole-v1", render_mode = "rgb_array"),
         "InvertedPendulum": gym.make("InvertedPendulum-v4")}
 """
 ENVS = {"pendulum": gym.make('Pendulum-v1')}
-ENVS = {"mountain_car": gym.make("MountainCar-v0")}
-ENVS = {"DoubleInvertedPendulum": gym.make('InvertedDoublePendulum-v4')}
+#ENVS = {"mountain_car": gym.make("MountainCar-v0")}
+#ENVS = {"DoubleInvertedPendulum": gym.make('InvertedDoublePendulum-v4')}
 SEED=3
 rs = np.random.RandomState(seed=SEED)
 if __name__ == "__main__":
@@ -91,6 +90,7 @@ if __name__ == "__main__":
         for rep_idx in range(nreps):
             arch_seed = rs.randint(int(1e8))
             strats = [neat_strat(arch_seed, config, "neat"), cma_strat(arch_seed, config, "cma")] 
+            strats = [cma_strat(arch_seed, config, "cma")]
             for strat in strats:
                 best = (-sys.maxsize - 1, None)
                 start_time = time.time()
@@ -103,8 +103,8 @@ if __name__ == "__main__":
                         best = (f, nn)
                     if evaluation_idx % 1000 == 0:
                         nn = best[1]
-                        f = evaluate_policy(nn, 100, SEED, env) # Test seed always the same
+                        f = evaluate_policy(nn, 100, 2, env) # Test seed always the same
                         print(evaluation_idx / max_evals, f)
-                        strat.log(f"results/data/pruebaaa/{env_name}/{strat.name}_{env_name}_{SEED}_{rep_idx}.txt", f, nn, evaluation_idx+1, env._elapsed_steps, time.time() - start_time)
+                        strat.log(f"results/data/pruebaRandom/{env_name}/{strat.name}_{env_name}_{SEED}_{rep_idx}.txt", f, nn, evaluation_idx+1, env._elapsed_steps, time.time() - start_time)
                         fs = []
                 print(f"time for all evaluations: {time.time() - start_time}")
