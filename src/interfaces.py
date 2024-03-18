@@ -6,7 +6,7 @@ import pickle
 from pathlib import Path
 import pandas as pd
 
-"""
+
 def get_attr(genome):
     #Get attributes from the genome of type cma
     #Number of weights mid
@@ -41,7 +41,7 @@ def save_arch(path):
         data["fitness"].append(fit)
     name = os.path.splitext(path)[0] + ".csv"
     pd.DataFrame(data).to_csv(name)
-"""
+
 class policy_nn:
 
     def __init__(self, n_in, n_out):

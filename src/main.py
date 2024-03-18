@@ -1,6 +1,7 @@
 import gymnasium as gym
 from cma_strat import cma_nn, cma_strat
 from neat_strat import neat_nn, neat_strat
+from random_strat import random_strat
 from interfaces import policy_nn, optimization_strat
 import numpy as np
 import time
@@ -89,8 +90,7 @@ if __name__ == "__main__":
         nreps = 20 # Number of repetitions for each algorithm in each env
         for rep_idx in range(nreps):
             arch_seed = rs.randint(int(1e8))
-            strats = [neat_strat(arch_seed, config, "neat"), cma_strat(arch_seed, config, "cma")] 
-            strats = [cma_strat(arch_seed, config, "cma")]
+            strats = [neat_strat(arch_seed, config, "neat"), cma_strat(arch_seed, config, "cma"), random_strat(arch_seed, config, "random")] 
             for strat in strats:
                 best = (-sys.maxsize - 1, None)
                 start_time = time.time()

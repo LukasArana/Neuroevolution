@@ -111,6 +111,7 @@ class neat_strat(optimization_strat):
             self._f_values = []
             self._solution_idx = 0
         res = self._solutions[self._solution_idx]
+        print(self._solutions[self._solution_idx])
         return neat_nn(res, self.config)
 
     def tell(self, f: float) -> None:
