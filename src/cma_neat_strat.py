@@ -10,9 +10,8 @@ from cma_strat import cma_nn, cma_strat, cma_hyperparams
 import cma
 import sys
 import time
-from cma_strat import cma_nn, cma_strat
-from random_strat import random_strat
 import copy
+
 def get_nns(path):
     nns_neat = {i :[] for i in range(20)}
     idx_cma = 0

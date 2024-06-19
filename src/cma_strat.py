@@ -8,7 +8,7 @@ class cma_hyperparams:
     std_normal_initialization=0.1
     cma_sigma0=0.2
     n_middle_layers=0 #it is actually the number of mid-layer to mid-layer weight-sets. n_middle_layers = hidden_layers - 1
-    n_params_middle_layers=10
+    n_params_middle_layers=0
     pop_size = 200
 
 class cma_nn:
@@ -20,17 +20,20 @@ class cma_nn:
         self.biases = []
 
         # Initialize weights and biases
+        
+        """
         self.weights.append(np.zeros((cma_hyperparams.n_params_middle_layers, n_in), dtype=np.float32))
         self.biases.append(np.zeros((cma_hyperparams.n_params_middle_layers,), dtype=np.float32))
         
-
         for _ in range(cma_hyperparams.n_middle_layers):
             self.weights.append(np.zeros((cma_hyperparams.n_params_middle_layers, cma_hyperparams.n_params_middle_layers), dtype=np.float32))
             self.biases.append(np.zeros((cma_hyperparams.n_params_middle_layers,), dtype=np.float32))
             
         self.weights.append(np.zeros((n_out, cma_hyperparams.n_params_middle_layers), dtype=np.float32))
         self.biases.append(np.zeros((n_out,), dtype=np.float32))
-
+"""
+        self.weights.append(np.zeros((n_out, n_in), dtype=np.float32))
+        self.biases.append(np.zeros((n_out,), dtype=np.float32))
 
     def get_output(self, input): 
         assert len(input) == self.n_in
@@ -96,7 +99,6 @@ class cma_strat(optimization_strat):
             self._solution_idx = 0
             
         res = cma_nn(self.n_in, self.n_out)
-        print(self._solutions[self._solution_idx])
 
         res.set_parameters(self._solutions[self._solution_idx])
         return res

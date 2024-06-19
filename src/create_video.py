@@ -5,8 +5,9 @@ import pandas as pd
 import os
 import glob
 from cma_strat import cma_nn, cma_strat
+from neat_strat import neat_strat
+from cma_neat_strat import cma_neat_strat
 from main import evaluate_policy
-#from cma_strat import cma_nn 
 import numpy as np
 
 
@@ -88,12 +89,16 @@ ENVS = {"cart": gym.make("CartPole-v1", render_mode = "rgb_array"),
       #  "DoubleInvertedPendulum": gym.make('InvertedDoublePendulum-v4', render_mode = "rgb_array"),
        # "InvertedPendulum": gym.make("InvertedPendulum-v4", render_mode = "rgb_array")}
 
+ENVS = {"DoubleInvertedPendulum": gym.make('InvertedDoublePendulum-v4', render_mode = "rgb_array")}
+not_algs =["cma_neat", "cmaFC", "FullyRandom", "newCMA", "random"]
 def get_nns(path):
     nns_cma = {i :[] for i in range(20)}
     nns_neat = {i :[] for i in range(20)}
     idx_cma = 0
     idx_neat = 0
     for idx, i in enumerate(glob.glob(f"{path}/*.pkl")):
+        if any(alg in i for alg in not_algs):
+            continue
         objects = []
         with open(i, "rb") as f:
             while True:
@@ -117,7 +122,7 @@ def get_nns(path):
 
 def diff():
     env = "lunar"
-    path = f"/home/walle/Desktop/TFG/nofn/results/data/pruebaF/{env}"
+    path = f"results/data/pruebaRandom/{env}"
     cma, neat = get_nns(path)
     neat = neat[19]
     SEED=3
@@ -135,29 +140,27 @@ def save_video(path, n = [19]):
     name = os.path.basename(path)
     env = ENVS[name]
 
-    nns_cma = get_nns(path)
-    nns_neat = get_nns(path)
+    nns_cma, nns_neat = get_nns(path)
 
-    folder_cma = os.path.join(path, "video", name, "cma")
-    folder_neat = os.path.join(path, "video",name, "neat")
+    folder_cma = os.path.join(path, "video", "cma")
+    folder_neat = os.path.join(path, "video", "neat")
 
-    os.makedirs(folder_cma, exist_ok= True)
-    os.makedirs(folder_neat, exist_ok= True)
+    os.makedirs(folder_cma, exist_ok = True)
+    os.makedirs(folder_neat, exist_ok = True)
 
     for key, val in nns_cma.items():
         if key in n:
             for idx, i in enumerate(val):
-                print(idx)
                 idx = idx * 1000
                 name = os.path.join(folder_cma, f"cma_{seed}_{key}_{idx}_video.avi")
-                f = evaluate_policy(i, 1, 2, env, True, name)
+                f = evaluate_policy(i, 1, 2, env, record = True, path = name)
 
-    for key, val in nns_neanamet.items():
+    for key, val in nns_neat.items():
         if key in n:
             for idx, i in enumerate(val):
                 idx = idx * 1000
                 name = os.path.join(folder_neat, f"neat_{seed}_{key}_{idx}_video.avi")
-                f = evaluate_policy(i, 1, 2, env, True, name)
+                f = evaluate_policy(i, 1, 2, env, record = True, path = name)
 
 def get_attr(genome):
     #Get attributes from the genome of type cma
@@ -197,5 +200,5 @@ def save_arch(path):
 
 #save_arch(path = "/home/walle/Desktop/TFG/nofn/results/data/prueba/mountain_car_cont/neat_mountain_car_cont_3_9_nn.pkl")
 for env in ENVS.keys():
-    save_video(path = os.path.join("/home/walle/Desktop/TFG/nofn/results/data/pruebaF", env))
+    save_video(path = os.path.join("results/data/pruebaRandom", env))
 #save_video(path = "/home/walle/Desktop/TFG/nofn/results/data/prueba/DoubleInvertedPendulum", n = [19])

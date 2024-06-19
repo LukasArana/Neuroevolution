@@ -8,12 +8,14 @@ import numpy as np
 import pickle
 import glob
 import os
-ENVS = {"pendulum": gym.make('Pendulum-v1'),
-            "mountain_car_cont": gym.make('MountainCarContinuous-v0'),
-            "mountain_car": gym.make("MountainCar-v0"),
-            "lunar": gym.make( "LunarLander-v2"),
-            "cart": gym.make("CartPole-v1"),
-            "acrobot": gym.make("Acrobot-v1")}
+ENVS = {"cart": gym.make("CartPole-v1", render_mode = "rgb_array"),
+        "pendulum": gym.make('Pendulum-v1'),
+        "mountain_car_cont": gym.make('MountainCarContinuous-v0'),
+        "mountain_car": gym.make("MountainCar-v0"),
+        "lunar": gym.make( "LunarLander-v2"),
+        "acrobot": gym.make("Acrobot-v1"),
+        "DoubleInvertedPendulum": gym.make('InvertedDoublePendulum-v4'),
+        "InvertedPendulum": gym.make("InvertedPendulum-v4")}
 
 
 def plot_stats(statistics, ylog=False, view=False, filename='avg_fitness.svg'):
@@ -216,5 +218,5 @@ def save_arch(path):
                         draw_net(obj.genome,os.path.basename(path) ,filename = os.path.join(os.path.join(folder, "best"), f"{idg}.gv.svg"))
                 except EOFError:
                     break
-#for i in ENVS:
-#    save_arch(f"results/data/pruebaF/{i}")
+for i in ENVS:
+    save_arch(f"results/data/pruebaRandom/{i}")

@@ -6,17 +6,12 @@ import types
 CHECKPOINT_GENERATION_INTERVAL = 1
 CHECKPOINT_PREFIX = None
 
-def _eval_genomes(eval_single_genome, genomes, neat_config):
-    parallel_evaluator = ParallelEvaluator(NUM_WORKERS, eval_function=eval_single_genome)
-
-    parallel_evaluator.evaluate(genomes, neat_config)
-
 class neat_nn(policy_nn):
     def __init__(self, genome, config):
         self.config  = config
         self.genome = genome
         self.nn = neat.nn.FeedForwardNetwork.create(genome, config)
-        #self.nn = neat.nn.recurrent.RecurrentNetwork.create(genome, config)
+        #self.nn = neat.nn.recurrent.RecurrentNetwork.create(genome, config) to create Recurrent ANNs
     def get_output(self, input_):
         return self.nn.activate(input_)
 
@@ -39,18 +34,10 @@ def run(self, n):
 
                 if best is None or g.fitness > best.fitness:
                     best = g
-            #self.reporters.post_evaluate(self.config, self.population, self.species, best)
 
             # Track the best genome ever seen.
             if self.best_genome is None or best.fitness > self.best_genome.fitness: #Maximization
                 self.best_genome = best
-
-            #if not self.config.no_fitness_termination:
-                # End if the fitness threshold is reached.
-             #   fv = np.mean([g.fitness for g in self.population.values()])
-              #  if fv >= self.config.fitness_threshold:
-               #     self.reporters.found_solution(self.config, self.generation, best)
-                #    break
 
             # Create the next generation from the current generation.
             self.population = self.reproduction.reproduce(self.config, self.species,
@@ -66,10 +53,6 @@ def run(self, n):
                     self.population = self.reproduction.create_new(self.config.genome_type,
                                                                    self.config.genome_config,
                                                                    self.config.pop_size)
-                else:
-                    raise CompleteExtinctionException()
-
-            # Divide the new population into species.
             self.species.speciate(self.config, self.population, self.generation)
 
             #self.reporters.end_generation(self.config, self.population, self.species)
@@ -111,7 +94,6 @@ class neat_strat(optimization_strat):
             self._f_values = []
             self._solution_idx = 0
         res = self._solutions[self._solution_idx]
-        print(self._solutions[self._solution_idx])
         return neat_nn(res, self.config)
 
     def tell(self, f: float) -> None:
